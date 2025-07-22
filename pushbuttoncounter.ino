@@ -1,35 +1,23 @@
-char command;
+int buttonPin = 2;
+int counter = 0;
+bool lastState = HIGH;
+bool currentState;
 
 void setup() {
+  pinMode(buttonPin, INPUT_PULLUP); // Internal pull-up resistor
   Serial.begin(9600);
-  pinMode(8, OUTPUT);  // Light (Red LED)
-  pinMode(9, OUTPUT);  // Fan (Green LED)
-  Serial.println("System Ready. Enter 1-4 to control devices.");
 }
 
 void loop() {
-  if (Serial.available()) {
-    command = Serial.read();
+  currentState = digitalRead(buttonPin);
 
-    if (command == '1') {
-      digitalWrite(8, HIGH);   // Light ON
-      Serial.println("Light is ON");
-    }
-    else if (command == '2') {
-      digitalWrite(8, LOW);    // Light OFF
-      Serial.println("Light is OFF");
-    }
-    else if (command == '3') {
-      digitalWrite(9, HIGH);   // Fan ON
-      Serial.println("Fan is ON");
-    }
-    else if (command == '4') {
-      digitalWrite(9, LOW);    // Fan OFF
-      Serial.println("Fan is OFF");
-    }
-    else {
-      Serial.println("Invalid Command. Use 1-4.");
-    }
+  // Detect button press (LOW state)
+  if (lastState == HIGH && currentState == LOW) {
+    counter++;
+    Serial.print("Button Pressed. Count = ");
+    Serial.println(counter);
+    delay(200); // debounce delay
   }
-}
 
+  lastState = currentState;
+}
